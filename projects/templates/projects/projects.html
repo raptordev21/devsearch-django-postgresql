@@ -6,4 +6,10 @@
 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi labore magni aspernatur, vero voluptas repellendus ut?
     Aspernatur corporis molestiae placeat?</p>
 
+<ul>
+    {% for user in users %}
+    <li>ID: <a href="{% url 'project' user.id %}">{{user.id}}</a></li>
+    {% endfor %}
+</ul>
+
 {% endblock content %}
