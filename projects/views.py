@@ -1,32 +1,49 @@
-from django.shortcuts import render
-
-usersList = [
-    {
-        'id': '1',
-        'name': 'raptor'
-    },
-    {
-        'id': '2',
-        'name': 'ace'
-    },
-    {
-        'id': '3',
-        'name': 'dell'
-    },
-]
+from django.shortcuts import render, redirect
+from .models import Project
+from .forms import ProjectForm
 
 
 def projects(request):
-    return render(request, 'projects/projects.html', {'users': usersList})
+    projects = Project.objects.all()
+    return render(request, 'projects/projects.html', {'projects': projects})
 
 
 def project(request, id):
-    projectObj = None
-    for i in usersList:
-        if i['id'] == id:
-            projectObj = i
+    project = Project.objects.get(id=id)
+    return render(request, 'projects/single-project.html', {'project': project})
 
-    if projectObj == None:
-        return render(request, 'notfound.html')
-    else:
-        return render(request, 'projects/single-project.html', {'project': projectObj})
+
+def createProject(request):
+    form = ProjectForm()
+
+    if request.method == 'POST':
+        form = ProjectForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('projects')
+
+    context = {'form': form}
+    return render(request, 'projects/project_form.html', context)
+
+
+def updateProject(request, id):
+    project = Project.objects.get(id=id)
+    form = ProjectForm(instance=project)
+
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, instance=project)
+        if form.is_valid():
+            form.save()
+            return redirect('projects')
+
+    context = {'form': form}
+    return render(request, 'projects/project_form.html', context)
+
+
+def deleteProject(request, id):
+    project = Project.objects.get(id=id)
+    if request.method == 'POST':
+        project.delete()
+        return redirect('projects')
+    context = {'object': project}
+    return render(request, 'projects/delete_confirm.html', context)

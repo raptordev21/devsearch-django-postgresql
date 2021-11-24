@@ -4,7 +4,10 @@
 
 <h1>Single Project Template</h1>
 <p>
-    ID: {{project.id}} Name: {{project.name}}
+    ID: {{project.id}} Name: {{project.title}}
+    {% for tag in project.tags.all %}
+    <span style="border: 1px solid grey;">{{tag}}</span>
+    {% endfor %}
 </p>
 
 {% endblock content %}
